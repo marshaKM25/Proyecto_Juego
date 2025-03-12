@@ -11,31 +11,40 @@ Antes de ejecutar el juego, asegúrate de tener Conda instalado y sigue estos pa
 
 Ejecuta el siguiente comando en la terminal:
 
-```bash
+
 conda create -n juego python=3.12
-2. Activar el entorno
+
+### 2. Activar el entorno del juego
 bash
 Copiar
 Editar
 conda activate juego
-3. Instalar dependencias
+
+### 3. Instalar dependencias
+
 bash
 Copiar
 Editar
 pip install pygame
-4. Ejecutar el juego
+
+### 4. Ejecutar el juego
+
 bash
 Copiar
 Editar
 python mi_juego.py
-Archivos
+
+
+
+### ARCHIVOS
 El juego consta de los siguientes archivos:
 
 mi_juego.py: Archivo principal que maneja la lógica del juego.
 personaje.py: Define la clase Cubo, que representa al jugador.
 enemigo.py: Define la clase Enemigo, que representa a los enemigos en el juego.
 bala.py: Define la clase Bala, que representa los disparos del jugador y permite eliminar enemigos.
-Mecánica del juego
+
+### MECANICA DEL JUEGO
 El jugador puede disparar proyectiles para eliminar enemigos.
 Los enemigos desaparecerán cuando sean alcanzados por un disparo.
 Se acumulan puntos por cada enemigo eliminado.
