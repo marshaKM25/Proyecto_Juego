@@ -15,23 +15,15 @@ Ejecuta el siguiente comando en la terminal:
 conda create -n juego python=3.12
 
 ### 2. Activar el entorno del juego
-bash
-Copiar
-Editar
+
 conda activate juego
 
 ### 3. Instalar dependencias
 
-bash
-Copiar
-Editar
 pip install pygame
 
 ### 4. Ejecutar el juego
 
-bash
-Copiar
-Editar
 python mi_juego.py
 
 
