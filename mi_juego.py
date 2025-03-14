@@ -1,95 +1,124 @@
 import pygame
-from personaje import Cubo  # Importa la clase Cubo desde el módulo personaje
-from enemigo import Enemigo  # Importa la clase Enemigo desde el módulo enemigo
-import random  # Importa la biblioteca random para generar valores aleatorios
+from personaje import Cubo
+from enemigo import Enemigo
+from bala import Bala
+import random
 
-# Inicializa Pygame
 pygame.init()
+pygame.mixer.init()
 
-# Dimensiones de la ventana del juego
+# Configuración de la ventana y el juego
 ANCHO = 500
 ALTO = 500
 VENTANA = pygame.display.set_mode([ANCHO, ALTO])
-FPS = 60  # Velocidad de fotogramas por segundo
-
-# Fuente para mostrar texto en pantalla
+FPS = 60
 FUENTE = pygame.font.SysFont("Comic Sans", 40)
+SONIDO_DISPARO = pygame.mixer.Sound('sonido/bala.mp3')
+SONIDO_PERDER_VIDA = pygame.mixer.Sound('sonido/perder_vida.mp3')  # Nuevo sonido para perder vida
 
-# Variables de estado del juego
-jugando = True  # Controla si el juego sigue en ejecución
-reloj = pygame.time.Clock()  # Reloj para controlar la velocidad del juego
-vida = 5  # Cantidad de vidas del jugador
-puntos = 0  # Puntuación del jugador
+# Variables del juego
+jugando = True
+reloj = pygame.time.Clock()
+vida = 5
+puntos = 0
 
-tiempo_pasado = 0  # Control del tiempo transcurrido
-# Tiempo en milisegundos entre la generación de enemigos
-tiempo_entre_enemigos = 500  
+# Control de tiempo
+tiempo_pasado = 0
+tiempo_entre_enemigos = 500
+ultima_bala = 0
+tiempo_entre_balas = 500
 
-# Creación del personaje principal
+# Listas de objetos
+balas = []
 cubo = Cubo(ANCHO / 2, ALTO - 75)
-
-# Lista para almacenar los enemigos generados
 enemigos = []
 
-# Función para gestionar el movimiento del jugador
+def crear_bala():
+    """Crea una nueva bala si ha pasado el tiempo suficiente desde la última."""
+    global ultima_bala
+    if pygame.time.get_ticks() - ultima_bala > tiempo_entre_balas:
+        balas.append(Bala(cubo.rect.centerx, cubo.rect.centery))
+        ultima_bala = pygame.time.get_ticks()
+        SONIDO_DISPARO.play()
+
 def gestionar_teclas(teclas):
-    if teclas[pygame.K_a]:  # Si se presiona la tecla 'A', mueve el cubo a la izquierda
+    """Gestiona el movimiento del jugador y el disparo."""
+    if teclas[pygame.K_a]:
         cubo.x -= cubo.velocidad
-    if teclas[pygame.K_d]:  # Si se presiona la tecla 'D', mueve el cubo a la derecha
+    if teclas[pygame.K_d]:
         cubo.x += cubo.velocidad
+    if teclas[pygame.K_SPACE]:
+        crear_bala()
 
 # Bucle principal del juego
 while jugando and vida > 0:
-    
-    tiempo_pasado += reloj.tick(FPS)  # Actualiza el tiempo transcurrido en función del FPS
+    tiempo_pasado += reloj.tick(FPS)
 
     # Generación de enemigos
     if tiempo_pasado > tiempo_entre_enemigos:
-        enemigos.append(Enemigo(random.randint(0, ANCHO), -100))  # Crea un nuevo enemigo en una posición aleatoria
-        tiempo_pasado = 0  # Reinicia el contador de tiempo
+        enemigos.append(Enemigo(random.randint(0, ANCHO), -100))
+        tiempo_pasado = 0
 
-    # Captura los eventos del juego (teclado, cierre de ventana, etc.)
     eventos = pygame.event.get()
-    teclas = pygame.key.get_pressed()  # Obtiene las teclas presionadas
+    teclas = pygame.key.get_pressed()
 
-    # Renderiza los textos de vida y puntuación
+    # Renderiza la información en pantalla
     texto_vida = FUENTE.render(f"Vida: {vida}", True, "white")
     texto_puntos = FUENTE.render(f"Puntos: {puntos}", True, "white")
 
-    # Gestiona el movimiento del jugador
+    # Manejo de entrada del usuario
     gestionar_teclas(teclas)
 
-    # Procesa los eventos
     for evento in eventos:
-        if evento.type == pygame.QUIT:  # Si se cierra la ventana, finaliza el juego
+        if evento.type == pygame.QUIT:
             jugando = False
 
-    # Limpia la pantalla antes de dibujar los nuevos elementos
+    # Dibujar elementos en pantalla
     VENTANA.fill("black")
-    cubo.dibujar(VENTANA)  # Dibuja el cubo en la pantalla
+    cubo.dibujar(VENTANA)
 
-    # Itera sobre los enemigos existentes
-    for enemigo in enemigos:
-        enemigo.dibujar(VENTANA)  # Dibuja el enemigo
-        enemigo.movimiento()  # Mueve el enemigo
+    for enemigo in enemigos[:]:  # Iterar sobre una copia de la lista para evitar errores al eliminar elementos
+        enemigo.dibujar(VENTANA)
+        enemigo.movimiento()
 
-        # Verifica si hay colisión entre el cubo y un enemigo
+        # Verificar colisión con el jugador
         if pygame.Rect.colliderect(cubo.rect, enemigo.rect):
-            vida -= 1  # Reduce la vida del jugador
+            vida -= 1
+            SONIDO_PERDER_VIDA.play()  # Reproducir sonido de perder vida
             print(f"Te quedan {vida} vidas")
-            enemigos.remove(enemigo)  # Elimina al enemigo tras la colisión
+            enemigos.remove(enemigo)
 
-        # Si el enemigo llega al fondo de la pantalla
+        # Si el enemigo sale de la pantalla, se suma un punto
         if enemigo.y + enemigo.alto > ALTO:
-            puntos += 1  # Suma puntos
-            enemigos.remove(enemigo)  # Elimina al enemigo de la lista
+            puntos += 1
+            enemigos.remove(enemigo)
 
-    # Muestra la información en la pantalla
+        # Verificar colisión con balas
+        for bala in balas[:]:  # Iterar sobre una copia de la lista
+            if pygame.Rect.colliderect(bala.rect, enemigo.rect):
+                enemigos.remove(enemigo)
+                balas.remove(bala)
+                break  # Evitar iteraciones innecesarias
+
+    # Dibujar y mover balas
+    for bala in balas[:]:
+        bala.dibujar(VENTANA)
+        bala.movimiento()
+        if bala.y < 0:  # Eliminar la bala si sale de la pantalla
+            balas.remove(bala)
+
+    # Mostrar textos en pantalla
     VENTANA.blit(texto_vida, (20, 20))
     VENTANA.blit(texto_puntos, (20, 50))
 
-    # Actualiza la pantalla con los cambios
     pygame.display.update()
 
-# Finaliza Pygame cuando el juego termina
+# Finaliza Pygame correctamente
 pygame.quit()
+
+# Guardar la puntuación al final del juego
+nombre = input("Introduce tu nombre: ")
+with open("puntuaciones.txt", "a") as archivo:
+    archivo.write(f"{nombre} - {puntos}\n")
+
+print("Puntuación guardada correctamente.")
