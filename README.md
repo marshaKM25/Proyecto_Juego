@@ -41,3 +41,4 @@ Carpeta imagenes/: Las imágenes de la nave y enemigos
 El jugador puede disparar proyectiles para eliminar enemigos.
 Los enemigos desaparecerán cuando sean alcanzados por un disparo.
 Se acumulan puntos por cada enemigo eliminado.
+Tambien abra un item que hará que recargemos más rapido y disparemos en menos tiempo
