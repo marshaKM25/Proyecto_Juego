@@ -1,9 +1,23 @@
+#Este es el programa principal
+
+# Importamos la librería Pygame para crear y gestionar el juego
 import pygame
+
+# Importamos la clase Cubo desde el módulo 'personaje', que probablemente define el personaje del juego
 from personaje import Cubo
+
+# Importamos la clase Enemigo desde el módulo 'enemigo', que maneja la lógica de los enemigos
 from enemigo import Enemigo
+
+# Importamos la clase Bala desde el módulo 'bala', que define el comportamiento de las balas disparadas
 from bala import Bala
+
+# Importamos la clase Recarga desde el módulo 'recarga', que gestiona la recarga de munición
 from recarga import Recarga  # Importamos la clase Recarga
+
+# Importamos el módulo random para generar números aleatorios 
 import random
+
 
 pygame.init()
 pygame.mixer.init()
