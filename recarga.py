@@ -1,4 +1,6 @@
+# Importamos la librería Pygame para crear y gestionar el juego
 import pygame
+# Importamos el módulo random para generar números aleatorios
 import random
 
 class Recarga:
