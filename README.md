@@ -29,13 +29,13 @@ python mi_juego.py
 
 
 ### ARCHIVOS
-mi_juego.py: Archivo principal que maneja la lógica del juego.
-personaje.py: Define la clase Cubo, que representa al jugador.
-enemigo.py: Define la clase Enemigo, que representa a los enemigos en el juego.
-bala.py: Define la clase Bala, que representa los disparos del jugador y permite eliminar enemigos.
-puntuaciones.txt: Archivo donde se guardan las puntuaciones de los jugadores.
-Carpeta sonido/: Contiene efectos de sonido para los disparos (bala.mp3) y cuando el jugador pierde una vida (perder_vida.mp3).
-Carpeta imagenes/: Las imágenes de la nave y enemigos
+-mi_juego.py: Archivo principal que maneja la lógica del juego.
+-personaje.py: Define la clase Cubo, que representa al jugador.
+-enemigo.py: Define la clase Enemigo, que representa a los enemigos en el juego.
+-bala.py: Define la clase Bala, que representa los disparos del jugador y permite eliminar enemigos.
+-puntuaciones.txt: Archivo donde se guardan las puntuaciones de los jugadores.
+-Carpeta sonido/: Contiene efectos de sonido para los disparos (bala.mp3) y cuando el jugador pierde una vida (perder_vida.mp3).
+-Carpeta imagenes/: Las imágenes de la nave y enemigos
 
 ### MECANICA DEL JUEGO
 El jugador puede disparar proyectiles para eliminar enemigos.
